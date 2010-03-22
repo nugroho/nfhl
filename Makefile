@@ -35,6 +35,7 @@ OBJDIR = obj
 SRC    = md.c rmd.c sha.c
 INC    = md.h rmd.h sha.h
 OBJ    = $(patsubst %.c, $(OBJDIR)/%.o, $(SRC))
+LIBS   = lib/libnfhl.a
 
 vpath %.c src
 vpath %.h src include
@@ -42,13 +43,13 @@ vpath %.h src include
 $(OBJDIR)/%.o : %.c %.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-all: lib/libnfhl.o include/nfhl.h
+all: $(LIBS) include/nfhl.h
 
-lib/libnfhl.o: $(OBJ)
-	$(CC) -shared -o $@ $^
+lib/libnfhl.a: $(OBJ)
+	$(AR) q $@ $^
 
 include/nfhl.h: $(INC)
 	-@echo -- merge these files: $(INC) --
 
 clean:
-	-@echo -- remove these files: $(OBJ) --
+	-@echo -- remove these files: $(OBJ) $(LIBS) --
